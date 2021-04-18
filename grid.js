@@ -128,3 +128,7 @@ var layer = new Konva.Layer();
 shadowRectangle.hide();
 layer.add(shadowRectangle);
 
+stage.add(gridLayer);
+stage.add(layer);
+
+
