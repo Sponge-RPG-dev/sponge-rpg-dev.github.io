@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>NtRpg WEB gui</title>
+    <meta http-equiv="Cache-Control" content="no-store" />
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #F5F5F5;
+            background-size: cover;
+        }
+
+        * {
+            box-sizing: border-box; 
+        }
+
+        .column {
+            float: left;
+            padding: 10px;
+        }
+
+        .left {
+            width: 20%;
+        }
+
+        .right {
+            width: 80%;
+        }
+
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .ta-uielements {
+            padding: 10px;
+            line-height: 0.9;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-shadow: 1px 1px 1px #999;
+            width: 80%;
+            height: 5%;
+            resize: none;
+        }
+
+        .ta-generate-ui-elements {
+            width: 20%;
+            height: 5%;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .ui-element-buttons {
+            margin-left: 5px;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-shadow: 1px 1px 1px #999;
+            background-color: #F5F5F5;
+        }
+
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/konvajs/konva/0.9.0/konva.js"></script>
+    <script src="controlls.js"></script>
+</head>
+
+<body translate="no">
+    
+    
+    <div id="container">
+        <span class="column left">
+            <div class="vertical-align">
+                <label for=ta-controls>UI Elements</label>
+                <textarea id="ta-uielements" class="ta-uielements" id="controls" name="ta-controls">
+-
+I
+&lt
+&gt
+^
+V
++
+┐
+┘
+┌
+└
+┴
+┬
+┤
+├
+                </textarea> 
+                <input class="ta-generate-ui-elements" value="Gen. UI" onclick='generateUIElements("ta-uielements","ui-button-list")'/>       
+            </div>
+            <div id="ui-button-list" class="ui-button-list"></div>
+        </span>
+        <span class="column right" id="grid"></span>
+    </div>
+    
+
+    <script src=grid.js></script>
+
+
+</body>
+
+</html>
