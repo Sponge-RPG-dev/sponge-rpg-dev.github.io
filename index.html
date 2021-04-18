@@ -70,10 +70,28 @@
             background-color: #F5F5F5;
         }
 
+        .sk-btn-wrapper {
+            overflow-x: hidden;
+            overflow-y: scroll;
+        }
+
+        .sk-btn {
+
+            background-color: #ccc; 
+            border: 1px solid #F5F5F5;
+            color: black;
+            width: 100%;
+            padding: 10px 24px;
+            cursor: pointer;
+            display: inline-block; 
+            text-align: center;
+        }
+
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.rawgit.com/konvajs/konva/0.9.0/konva.js"></script>
     <script src="controlls.js"></script>
+    <script src="hoconparser.js"></script>
 </head>
 
 <body translate="no">
@@ -81,7 +99,7 @@
     
     <div id="container">
         <span class="column left">
-            <div class="vertical-align">
+            <div id="uibtns" class="vertical-align">
                 <label for=ta-controls>UI Elements</label>
                 <textarea id="ta-uielements" class="ta-uielements" id="controls" name="ta-controls">
 -
@@ -99,10 +117,22 @@ V
 ┬
 ┤
 ├
+X
                 </textarea> 
                 <input class="ta-generate-ui-elements" value="Gen. UI" onclick='generateUIElements("ta-uielements","ui-button-list")'/>       
             </div>
             <div id="ui-button-list" class="ui-button-list"></div>
+
+
+
+            <div class="vertical-align">
+                <label for=ta-tree-input>Paste Skilltree here</label>
+                <textarea id="ta-sk-input" class="ta-uielements" id="ta-tree-input" name="ta-tree-input"></textarea> 
+                <input class="ta-generate-ui-elements" value="Parse" onclick='parseTree("ta-sk-input","sk-btn","ta-uielements")'/>       
+            </div>
+            <div class="sk-btn-wrapper">
+                <div id="sk-btn"></div>
+            </div>
         </span>
         <span class="column right" id="grid"></span>
     </div>

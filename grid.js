@@ -19,12 +19,13 @@ var shadowRectangle = new Konva.Rect({
 function newRectangle(x, y, layer, stage, text) {
 
     var group = new Konva.Group({
+        x: x,
+        y: y,
         draggable: true
     });
 
     let rectangle = new Konva.Rect({
-        x: x,
-        y: y,
+    
         width: blockSnapSize * 1,
         height: blockSnapSize * 1,
         fill: '#fff',
@@ -34,7 +35,7 @@ function newRectangle(x, y, layer, stage, text) {
         shadowBlur: 2,
         shadowOffset: { x: 1, y: 1 },
         shadowOpacity: 0.4,
-        draggable: true,
+        draggable: false,
     });
 
     group.on('dragstart', e => {
@@ -61,8 +62,9 @@ function newRectangle(x, y, layer, stage, text) {
     });
     
     var text = new Konva.Text({
-        fontSize: 26,
-        fontFamily: 'Calibri',
+      
+        fontSize: 16,
+        fontFamily: 'Arial',
         text: text,
         fill: 'black',
         padding: 10,
@@ -97,7 +99,9 @@ stage.on('mousedown', (e) => {
 
 var gridLayer = new Konva.Layer();
 var padding = blockSnapSize;
-console.log(width, padding, width / padding);
+
+var MAX_X = 0;
+var MAX_Y = 0;
 for (var i = 0; i < width / padding; i++) {
   
     gridLayer.add(new Konva.Line({
@@ -105,10 +109,11 @@ for (var i = 0; i < width / padding; i++) {
         stroke: '#ddd',
         strokeWidth: 1
     }));
-
+    MAX_X = i;
 } 
 
 gridLayer.add(new Konva.Line({ points: [0, 0, 10, 10] }));
+
 for (var j = 0; j < height / padding; j++) {
   
     gridLayer.add(new Konva.Line({
@@ -116,19 +121,10 @@ for (var j = 0; j < height / padding; j++) {
         stroke: '#ddd',
         strokeWidth: 0.5
     }));
-
+    MAX_Y = j;
 } 
 
 var layer = new Konva.Layer();
 shadowRectangle.hide();
 layer.add(shadowRectangle);
-
-var rectangle = newRectangle(1, 3, layer, stage,"<");
-layer.add(rectangle);
-rectangle = newRectangle(1, 5, layer, stage,"1");
-layer.add(rectangle);
-
-stage.add(gridLayer);
-stage.add(layer);
-
 
