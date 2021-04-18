@@ -80,6 +80,7 @@ var stage = new Konva.Stage({
     height: height
 });
 
+
 stage.on('mousedown', (e) => {
     const isRight = e.evt.button === 2;
     if (isRight) {
