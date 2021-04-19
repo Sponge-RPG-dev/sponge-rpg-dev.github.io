@@ -34,18 +34,18 @@ function escapeHtml (string) {
     return entityMap[s];
   });
 }
-
+var _TREE; //yeah im awesome js dev
 function parseTree(textAreaID, divContainerID, taControlls) {
     $("#"+divContainerID).empty()
     var lines = $("#" + textAreaID).val();
 
-    var obj = parseHocon(lines);
-    if (obj.asciiMap == undefined) {
-        obj.asciiMap = ["X"];
+    _TREE = parseHocon(lines);
+    if (_TREE.asciiMap == undefined) {
+        _TREE.asciiMap = ["X"];
     }
-    var asciiMap = obj.AsciiMap;
+    var asciiMap = _TREE.AsciiMap;
     
-    var skills = obj.Skills;
+    var skills = _TREE.Skills;
 
     //Fill missing
     var arr = [];
@@ -79,8 +79,8 @@ function parseTree(textAreaID, divContainerID, taControlls) {
         $("#"+divContainerID).append(btn) 
     });
 
-    var midX=Math.round(MAX_Y/2);
-    var midY=Math.round(MAX_Y/2);
+    var midX=Math.round(MAX_X/4);
+    var midY=Math.round(MAX_Y/4);
     
     var skillMidX=0;
     var skillMidY=0;
@@ -109,11 +109,11 @@ function parseTree(textAreaID, divContainerID, taControlls) {
             }
             console.log("creating node node at " + index + " " + x)
             if (isControllElement(taControlls, c)) {
-                var element = newRectangle(x * blockSnapSize, index * blockSnapSize, layer, stage,c);
+                var element = newRectangle((x + midX) * blockSnapSize, (index + midY) * blockSnapSize, layer, stage,c);
                 console.log("created ui node at " + element.x() + " " + element.y())
                 layer.add(element);
             } else {
-                var element = newRectangle(x * blockSnapSize, index * blockSnapSize, layer, stage,c);    
+                var element = newRectangle((x + midX) * blockSnapSize, (index + midY) * blockSnapSize, layer, stage,c);    
                 console.log("created skill node at " + element.x() + " " + element.y())
                 layer.add(element);
             }
@@ -125,4 +125,61 @@ function parseTree(textAreaID, divContainerID, taControlls) {
 
 function isControllElement(taControlls, char) {
     return $("#" + taControlls).val().indexOf(char) >=0;
+}
+
+function updateTree(textAreaID, textAreaOutput, modalID) {
+
+    var maxX=layer.getChildren()[1].attrs.x
+    var maxY=layer.getChildren()[1].attrs.y;
+    var minX=layer.getChildren()[1].attrs.x;
+    var minY=layer.getChildren()[1].attrs.y;
+    //find maxs
+    for (var id = 2; id < layer.getChildren().length; id++) {
+        var child = layer.getChildren()[id];
+        if (child.nodeType == "Shape") {
+            continue;
+        }
+        var pos = child.attrs;
+        maxX=Math.max(maxX,pos.x);
+        maxY=Math.max(maxY,pos.y);
+        minX=Math.min(minX,pos.x);
+        minY=Math.min(minY,pos.y);
+    }
+
+    var matrix = []; 
+    
+    for (var j = maxY; j >= minY; j=j-blockSnapSize) {
+        var row = [];
+        for (var i = minX; i <= maxX; i=i+blockSnapSize) {
+                var group = getAt(i,j);
+                if (group == undefined) {
+                    row.push(".");
+                } else {
+                    group.children.forEach(element => {
+                        if (element.className == "Text") {
+                            row.push(element.textArr[0].text);
+                        }
+                    });
+                }
+            }
+        matrix.push(row);
+    }
+    // Get the modal
+    var modal = $("#" + modalID);
+    modal.css("display", "block");
+    $("#"+textAreaOutput).val("AsciiMap: " + JSON.stringify(matrix.reverse())); //meh
+}
+
+function getAt(x,y) {
+    for (const obj in layer.children) {
+        var o = layer.children[obj];
+        if (o.nodeType != "Group") {
+            continue;
+        }
+        var pos = o.attrs;
+        if (pos.x == x && pos.y == y) {
+            return o;
+        }
+    }
+    return undefined;
 }
