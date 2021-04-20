@@ -70,7 +70,15 @@ function newRectangle(x, y, layer, stage, text) {
         padding: 10,
         align: "center",
         verticalAlign: "middle",
-      });
+    });
+
+    group.on('mouseout', e => {
+       // $("#skillIdBtn_"+text.textArr[0].text).addClass("skill-on-grid");
+    });
+
+    group.on('mouseover', e => {
+       // $("#skillIdBtn_"+text.textArr[0].text).removeClass("skill-on-grid");
+    });
 
     group.add(rectangle).add(text);
     return group;

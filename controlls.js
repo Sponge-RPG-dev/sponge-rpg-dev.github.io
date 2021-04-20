@@ -1,3 +1,20 @@
+var entityMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+    '/': '&#x2F;',
+    '`': '&#x60;',
+    '=': '&#x3D;'
+  };
+
+function escapeHtml (string) {
+    return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+        return entityMap[s];
+    });
+}
+
 function generateUIElements(textAreaID, divContainerID) {
     $("#"+divContainerID).empty()
     var lines = $("#" + textAreaID).val().split("\n");
@@ -18,30 +35,16 @@ function generateUIElements(textAreaID, divContainerID) {
     $("#uibtns").hide();
 }
 
-var entityMap = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;',
-    '/': '&#x2F;',
-    '`': '&#x60;',
-    '=': '&#x3D;'
-  };
 
-function escapeHtml (string) {
-  return String(string).replace(/[&<>"'`=\/]/g, function (s) {
-    return entityMap[s];
-  });
-}
 var _TREE; //yeah im awesome js dev
 function parseTree(textAreaID, divContainerID, taControlls) {
+    layer.destroyChildren();
     $("#"+divContainerID).empty()
     var lines = $("#" + textAreaID).val();
 
     _TREE = parseHocon(lines);
     if (_TREE.asciiMap == undefined) {
-        _TREE.asciiMap = ["X"];
+        _TREE.asciiMap = [["X"]];
     }
     var asciiMap = _TREE.AsciiMap;
     
@@ -68,6 +71,7 @@ function parseTree(textAreaID, divContainerID, taControlls) {
     $.each(skills, function(index, skill) {
         var btn = $('<button/>',
         {
+            id: "skillIdBtn_" + skill.SkillTreeId,
             text: skill.SkillId + " (" + skill.SkillTreeId + ")",
             click: function () { 
                 var rec = newRectangle(1, 1, layer, stage, skill.SkillTreeId);
@@ -85,40 +89,38 @@ function parseTree(textAreaID, divContainerID, taControlls) {
     var skillMidX=0;
     var skillMidY=0;
 
+  
     $.each(asciiMap, function(index, row) {
-        for (var x = 0; x < row.length; x++) {
-            var c = row.charAt(x);
+        $.each(row, function(i, c) {
             if (c == "X") {
                 skillMidX = index;
-                skillMidY = x;
+                skillMidY = i;
+                return true
             }
-        }
+        });
     });
-    
+
     if (skillMidY == 0 && skillMidX == 0) {
         skillMidY = midY;
         skillMidX = midX;
     }
 
 
-    $.each(asciiMap, function(index, row) {    
-        for (var x = 0; x < row.length; x++) {
-            var c = row.charAt(x);
-            if (c == ".") {
-                continue;
+    $.each(asciiMap, function(index, row) {   
+        $.each(row, function(x, c) {
+            if (c != ".") {
+                console.log("creating node node at " + index + " " + x)
+                if (isControllElement(taControlls, c)) {
+                    var element = newRectangle((x + midX) * blockSnapSize, (index + midY) * blockSnapSize, layer, stage,c);
+                    console.log("created ui node at " + element.x() + " " + element.y())
+                    layer.add(element);
+                } else {
+                    var element = newRectangle((x + midX) * blockSnapSize, (index + midY) * blockSnapSize, layer, stage,c);    
+                    console.log("created skill node at " + element.x() + " " + element.y())
+                    layer.add(element);
+                } 
             }
-            console.log("creating node node at " + index + " " + x)
-            if (isControllElement(taControlls, c)) {
-                var element = newRectangle((x + midX) * blockSnapSize, (index + midY) * blockSnapSize, layer, stage,c);
-                console.log("created ui node at " + element.x() + " " + element.y())
-                layer.add(element);
-            } else {
-                var element = newRectangle((x + midX) * blockSnapSize, (index + midY) * blockSnapSize, layer, stage,c);    
-                console.log("created skill node at " + element.x() + " " + element.y())
-                layer.add(element);
-            }
-            
-        }
+        });
     });
     layer.draw();
 }
